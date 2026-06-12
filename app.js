@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SAP EWM Outbound Performance Cockpit</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand-block">
+        <div class="brand-logo-wrap" aria-label="Company logo">
+          <img class="brand-logo" src="assets/company-logo.png" alt="Company logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='grid';" />
+          <span class="brand-logo-fallback">LOGO</span>
+        </div>
+        <div>
+          <p class="eyebrow">SAP EWM</p>
+          <h1 data-i18n="appTitleShort">Outbound Performance Cockpit</h1>
+        </div>
+      </div>
+
+      <nav class="nav-list" aria-label="Cockpit navigation">
+        <a class="nav-item active" href="#overview" data-i18n="navOverview">Overview</a>
+        <a class="nav-item" href="#deliveries" data-i18n="navDeliveries">Deliveries</a>
+        <a class="nav-item" href="#details" data-i18n="navDetails">Details</a>
+        <a class="nav-item" href="#reasons" data-i18n="navReasons">Root causes</a>
+      </nav>
+
+      <div class="system-card">
+        <span class="status-dot"></span>
+        <div>
+          <strong data-i18n="warehouseLabel">Warehouse 8000</strong>
+          <p data-i18n="cockpitMode">Outbound monitoring</p>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow" data-i18n="operationalMonitoring">Operational monitoring</p>
+          <h2 data-i18n="mainTitle">Outbound Performance Cockpit</h2>
+        </div>
+        <div class="topbar-actions">
+          <div class="language-switch" aria-label="Language switch">
+            <button id="langEnBtn" class="lang-button active" type="button">EN</button>
+            <button id="langDeBtn" class="lang-button" type="button">DE</button>
+          </div>
+        </div>
+      </header>
+
+      <section id="overview" class="kpi-grid" aria-label="Outbound KPIs">
+        <button type="button" class="kpi-card good" data-kpi-filter="done">
+          <span class="kpi-label" data-i18n="kpiGiPosted">GI posted</span>
+          <strong id="kpiGiPosted">0</strong>
+          <small data-i18n="kpiGiPostedSub">Deliveries sent out</small>
+        </button>
+        <button type="button" class="kpi-card critical" data-kpi-filter="critical">
+          <span class="kpi-label" data-i18n="kpiCritical">Critical</span>
+          <strong id="kpiCritical">0</strong>
+          <small data-i18n="kpiCriticalSub">Not GI posted, immediate action required</small>
+        </button>
+        <button type="button" class="kpi-card warning" data-kpi-filter="warning">
+          <span class="kpi-label" data-i18n="kpiWarnings">Warnings</span>
+          <strong id="kpiWarnings">0</strong>
+          <small data-i18n="kpiWarningsSub">Not GI posted, at risk</small>
+        </button>
+      </section>
+
+      <section id="reasons" class="panel root-cause-panel">
+        <button id="rootCauseToggle" class="root-cause-toggle" type="button" aria-expanded="false" aria-controls="reasonList">
+          <span id="rootCauseCount">0 root causes</span>
+          <span class="root-cause-chevron" aria-hidden="true">⌄</span>
+        </button>
+        <div id="reasonList" class="reason-list collapsed"></div>
+      </section>
+
+      <section id="deliveries" class="panel table-panel">
+        <div class="panel-header table-header">
+          <div>
+            <p class="eyebrow" data-i18n="deliveryMonitoring">Affected deliveries</p>
+            <h3 id="deliveryPanelTitle" data-i18n="outboundDeliveries">Outbound deliveries</h3>
+          </div>
+          <div class="filters">
+            <input id="searchInput" type="search" data-i18n-placeholder="searchPlaceholder" placeholder="Search delivery, TU, carrier, wave..." />
+            <select id="statusFilter" aria-label="Status filter">
+              <option value="all" data-i18n="filterAll">All statuses</option>
+              <option value="critical" data-i18n="filterCritical">Critical</option>
+              <option value="warning" data-i18n="filterWarning">Warning</option>
+              <option value="done" data-i18n="filterDone">GI posted</option>
+            </select>
+            <button id="clearFilterBtn" class="button secondary" type="button" data-i18n="clearFilter">Show all</button>
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th data-i18n="thStatus">Status</th>
+                <th data-i18n="thDelivery">Delivery</th>
+                <th data-i18n="thPlannedGi">Planned GI</th>
+                <th data-i18n="thTuDoor">TU / Door</th>
+                <th data-i18n="thPick">Pick</th>
+                <th data-i18n="thStage">Stage</th>
+                <th data-i18n="thLoad">Load</th>
+                <th data-i18n="thMainBlocker">Main blocker</th>
+                <th data-i18n="thNextAction">Next action</th>
+              </tr>
+            </thead>
+            <tbody id="deliveryTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="details" class="details-grid">
+        <div class="panel detail-panel">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow" data-i18n="selectedDelivery">Selected delivery</p>
+              <h3 id="detailTitle">No delivery selected</h3>
+            </div>
+            <span id="detailBadge" class="badge muted">Select a row</span>
+          </div>
+          <div id="detailContent" class="empty-state">
+            Select a delivery row to see the bottleneck, SAP standard actions, HUs, warehouse tasks, stock checks, bin blocks and application logs.
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
